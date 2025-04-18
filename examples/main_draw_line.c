@@ -59,6 +59,7 @@ int main(void)
     {
         printf("Correct init\n");
         mlx_win = mlx_new_window(mlx, 500, 500, "Line Example!");
+
         //Get image for double buffering
         img.img = mlx_new_image(mlx, 500, 500);
         img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
@@ -73,6 +74,8 @@ int main(void)
 
         // Put the image onto the window
         mlx_put_image_to_window(mlx, mlx_win, img.img, 0, 0);
+		//
+
         mlx_loop(mlx);
     }
     printf("Successfully finished fractol program :D\n");

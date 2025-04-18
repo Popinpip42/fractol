@@ -1,66 +1,32 @@
 #include "fractol.h"
-#include "mlx.h"
 
-//TODO: Implement basic window handling
-//TODO: Try out implementing double buffering or other opt tech
+//TODO: import my modified fprintf
+//Allowed function
+//open, close, read,write,
+//malloc, free,
+//perror, strerror, exit
 
-int L = 600;
-int W = 600;
-
-// Function to put a pixel on the image
-void  my_mlx_pixel_put(t_data *data, int x, int y, int color)
+int	main(int argc, char **argv)
 {
-  char    *dst;
+	//1- User can choose between 3 different fractals (Mandel, Julia, ...)
+	//1.2 - The fractal is chosen based on execution paraemeters like : "./fractol (1..3)"
+	//1.2 - Error managment if case the the parameter is invalid
+	t_fractal_params	*params;
+	t_data				*data;
 
-  //data->addr : Initial position in the window
-  //line_length : amount of pixels one line of the window (vertical alignment)
-  //bits_per_pixel : amount of bits per pixel (Horizontal alignment)
-  dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
-  *(unsigned int*)dst = color;
-}
+	if (argc < 2)
+		usage_error();
+	params = get_params(argc, argv);
+	data = get_data(900, 900);
+	data->params = params;
 
-int draw_buff(t_data *data)
-{
-  int i;
-  int j;
+	draw(data);
 
-  i = 60;
-  while (i < 120)
-  {
-    j = 60;
-    while (j < 120)
-    {
-      my_mlx_pixel_put(data, i, j, 0x00FF0000);
-      j++;
-    }
-    i++;
-  }
-  return (0);
-}
+	// Set hooks
+	mlx_key_hook(data->mlx_win, key_hook, data);
+	mlx_mouse_hook(data->mlx_win, mouse_hook, data);
+	//When pressing windows x
+	mlx_hook(data->mlx_win, 17, 0, close_hook, data);
 
-int main(void)
-{
-  void  *mlx;
-  void  *mlx_window;
-  t_data  data;
-
-  mlx = mlx_init();
-  if (!mlx)
-  {
-    printf("Failed ");
-    return (-1);
-  }
-  mlx_window = mlx_new_window(mlx, 600, 600, "First try");
-
-  //Create a new image to render
-  //We buffer the pixels into this image before "render()" call
-  data.img = mlx_new_image(mlx, 600, 600);
-  data.addr = mlx_get_data_addr(data.img, &data.bits_per_pixel, &data.line_length, &data.endian);
-
-  draw_buff(&data);
-
-  mlx_put_image_to_window(mlx, mlx_window, data.img, 0, 0);
-
-
-  mlx_loop(mlx);
+	mlx_loop(data->mlx);
 }

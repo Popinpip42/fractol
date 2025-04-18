@@ -12,13 +12,24 @@ MLX_LNK = -L$(MLX) -lmlx -framework OpenGL -framework AppKit
 RM = rm -rf
 
 # Source and Object Files
-SRC = main.c
+SRC = main.c \
+	  data_obj.c \
+	  param_obj.c \
+	  errors.c \
+	  handlers.c \
+	  hooks.c \
+	  draw.c \
+	  draw_utils.c \
+	  str_utils.c \
+	  num_utils.c \
+
 OBJ = ${SRC:.c=.o}
 
 # Default rule (make)
 all: $(NAME)
 
 # Linking
+# $(OBJ) -fsanitize=address -g
 $(NAME): $(OBJ)
 	$(CC) $(OBJ) $(MLX_LNK) -o $(NAME)
 
